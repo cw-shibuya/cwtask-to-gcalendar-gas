@@ -51,7 +51,26 @@ var config2identifier = function(config) {
   var white_list = ['calendar_id', 'room_id', 'account_id'];
   for (var i = 0, len = white_list.length, key =''; i < len; i++) {
     key = white_list[i];
-    identifier = identifier + '_' + key + ':' + config[key];
+    identifier = identifier + getMD5(config[key]);
   }
   return identifier;
+}
+
+
+/*
+ See:Google Apps Help forum
+ http://www.google.com/support/forum/p/apps-script/thread?tid=0a18d7ca49d1cdf4&hl=en
+*/
+var getMD5 = function(string) {
+  var theHash = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, string);
+  var txt_hash = '';
+  for (j = 0; j < theHash.length; j++) {
+    var hashVal = theHash[j];
+    if (hashVal < 0)
+      hashVal += 256; 
+    if (hashVal.toString(16).length == 1)
+      txt_hash += "0";
+    txt_hash += hashVal.toString(16);
+  }
+  return txt_hash;
 }
